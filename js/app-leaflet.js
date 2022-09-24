@@ -1,13 +1,27 @@
 // 2D map from leaflet and osm tiles
 // create map object, tell it to live in 'map' div and give initial latitude, longitude, zoom values
 // pass option to turn scroll wheel zoom off
-var map = L.map('map',{scrollWheelZoom:true}).setView([55.5, -4], 6);
+var map = L.map('map',{scrollWheelZoom:true}).setView([46.8182, 8.2275], 8);
 
 // add base map tiles from OpenStreetMap and attribution info to 'map' div
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+// add wms layers
+var pixelkarteGrau = L.tileLayer.wms('https://wms.geo.admin.ch/', {
+    layers: 'ch.swisstopo.pixelkarte-grau',
+    format: 'image/png',
+    transparent: true
+});
+pixelkarteGrau.addTo(map);
+
+var wanderwege = L.tileLayer.wms('https://wms.geo.admin.ch/', {
+    layers: 'ch.swisstopo.swisstlm3d-wanderwege',
+    format: 'image/png',
+    transparent: true
+});
+wanderwege.addTo(map);
 
 L.control.locate().addTo(map);
 
@@ -88,14 +102,16 @@ for (i in activities) {
     data = activities[i];
     if (data.map.coordinates ) {
 
-        var lineColour = "#000000"; //black
+        var lineColour = "#FF00FF"; //magenta
+
+        /* var lineColour = "#000000"; //black
         if ( data.type.toLowerCase() === 'hike' || data.type.toLowerCase() === 'walk' ) {
             lineColour = "#006400"; //green
         } else if ( data.type.toLowerCase() === 'run' ) {
             lineColour = "#0000ff"; //blue
         } else if ( data.type.toLowerCase() === 'ride' ) {
             lineColour = "#ff0000"; // red
-        }
+        } */
 
         var coords = data.map.coordinates;
         // lat lon wrong way round
