@@ -1,27 +1,41 @@
-// 2D map from leaflet and osm tiles
-// create map object, tell it to live in 'map' div and give initial latitude, longitude, zoom values
-// pass option to turn scroll wheel zoom off
-var map = L.map('map',{scrollWheelZoom:true}).setView([46.8182, 8.2275], 8);
+// base map
+var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+});
 
-// add base map tiles from OpenStreetMap and attribution info to 'map' div
-L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-// add wms layers
+// wms layers
 var pixelkarteGrau = L.tileLayer.wms('https://wms.geo.admin.ch/', {
     layers: 'ch.swisstopo.pixelkarte-grau',
     format: 'image/png',
     transparent: true
 });
-pixelkarteGrau.addTo(map);
 
 var wanderwege = L.tileLayer.wms('https://wms.geo.admin.ch/', {
     layers: 'ch.swisstopo.swisstlm3d-wanderwege',
     format: 'image/png',
     transparent: true
 });
-wanderwege.addTo(map);
+
+var map = L.map('map', {
+    center: [46.8182, 8.2275],
+    zoom: 8,
+    layers: [osm, pixelkarteGrau, wanderwege]
+});
+
+var baseMaps = {
+    "OpenStreetMap": osm
+};
+
+var overlayMaps = {
+    "Swisstopo Map Grey": pixelkarteGrau,
+    "Swiss Hiking Trails": wanderwege
+};
+
+var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+// layerControl.addOverlay(pixelkarteGrau, "Switzerland");
+// layerControl.addOverlay(wanderwege, "Hiking Trails");
 
 L.control.locate().addTo(map);
 
