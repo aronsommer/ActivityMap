@@ -29,7 +29,7 @@ body, #map {
 #top-right-content {
     position: absolute;
     right: 10px;
-    top: 100px;
+    bottom: 25px;
     z-index: 1000;
 }
 #logout-button {
